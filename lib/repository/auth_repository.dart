@@ -9,6 +9,7 @@ class AuthRepository {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     print(auth.toJson());
     http.Response res = await http.post(Uri.parse(EndPoint.login), body: auth.toJson());
+    print(Uri.parse(EndPoint.login));
     print(res.body);
     if (res.statusCode == 200) {
       var data = json.decode(res.body);

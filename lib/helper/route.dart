@@ -14,6 +14,7 @@ class Routes {
   static const String REGISTER = '/register';
   static const String HOME = '/home';
   static const String DETAIL_BARANG = '/detail_barang';
+  static const String ADD_BARANG = '/add_barang';
   static const String EDIT_BARANG = '/edit_barang';
   static const String HISTORY_BARANG_KELUAR = '/barang_keluar';
   static const String HISTORY_BARANG_MASUK = '/barang_masuk';
@@ -30,6 +31,8 @@ class Routes {
         return PageTransition(child: ListBarang(), type: PageTransitionType.bottomToTop);
       case HISTORY_BARANG_KELUAR:
         return PageTransition(child: HistoriPengeluaran(), type: PageTransitionType.bottomToTop);
+         case ADD_BARANG:
+        return PageTransition(child: TambahDataBarang(), type: PageTransitionType.bottomToTop);
       case HISTORY_BARANG_MASUK:
         return PageTransition(child: HistoriPemasukan(), type: PageTransitionType.bottomToTop);
       case DETAIL_BARANG:

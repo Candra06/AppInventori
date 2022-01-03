@@ -10,8 +10,6 @@ import 'package:inventory/repository/auth_repository.dart';
 import 'package:page_transition/page_transition.dart';
 
 class LoginPIN extends StatefulWidget {
-  LoginPIN();
-
   @override
   _LoginPINState createState() => _LoginPINState();
 }

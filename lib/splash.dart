@@ -48,8 +48,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
     Future.delayed(Duration(seconds: 3), () async {
       String token = await Pref.getToken();
-      print(token);
-      if (token == null) {
+      if (token == null || token == 'null') {
         Navigator.of(context).pushReplacement(PageTransition(child: LoginPIN(), type: PageTransitionType.fade));
       } else {
         Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));

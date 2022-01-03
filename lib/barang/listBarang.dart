@@ -8,6 +8,7 @@ import 'package:inventory/modal/tambahPemasukan.dart';
 import 'package:inventory/modal/tambahPengeluaran.dart';
 import 'package:inventory/model/home.dart';
 import 'package:inventory/repository/repo_barang.dart';
+
 class ListBarang extends StatefulWidget {
   ListBarang({Key key, this.title}) : super(key: key);
 
@@ -19,7 +20,7 @@ class ListBarang extends StatefulWidget {
 
 class _ListBarangState extends State<ListBarang> {
   Future<List<Barang>> listBarang;
-  
+
   TextEditingController txtNama = new TextEditingController();
   BarangRepository barangRepository = new BarangRepository();
   bool load = true;
@@ -70,16 +71,16 @@ class _ListBarangState extends State<ListBarang> {
           actions: [
             IconButton(
                 onPressed: () {
-                  
+                  getData();
                 },
-                icon: Icon(Icons.settings))
+                icon: Icon(Icons.refresh))
           ],
         ),
         drawer: SideMenu(),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TambahDataBarang()));
+            Navigator.pushNamed(context, Routes.ADD_BARANG);
           },
         ),
         body: Container(
@@ -113,7 +114,6 @@ class _ListBarangState extends State<ListBarang> {
                                 fontSize: 14),
                           )),
                     ),
-                   
                   ],
                 ),
               ),
