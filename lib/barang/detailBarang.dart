@@ -84,6 +84,13 @@ class _DetailBarangState extends State<DetailBarang> with SingleTickerProviderSt
                                         widget.barang.stok.toString(),
                                         style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                                       ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Text(
+                                        widget.barang.keterangan,
+                                        style: TextStyle(fontSize: 14, color: Colors.white),
+                                      ),
                                     )
                                   ],
                                 )),

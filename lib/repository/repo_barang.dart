@@ -6,6 +6,7 @@ import 'package:inventory/helper/pref.dart';
 import 'package:inventory/model/detail.dart';
 import 'package:inventory/model/histori.dart';
 import 'package:inventory/model/home.dart';
+import 'package:async/async.dart';
 
 class BarangRepository {
   Future<List<Barang>> listBarang() async {
@@ -14,6 +15,7 @@ class BarangRepository {
     var data = json.decode(res.body);
 
     List<dynamic> list = data['data'];
+    print(data['data']);
     if (res.statusCode == 200) {
       return list.map((e) => Barang.fromJson(e)).toList();
     } else {
@@ -47,6 +49,7 @@ class BarangRepository {
     request.fields['nama_barang'] = barang.namaBarang;
     request.fields['stok'] = barang.stok;
     request.fields['status'] = barang.status;
+    request.fields['keterangan'] = barang.keterangan;
     request.headers.addAll(headers);
 
     // http.Response response = await http.Response.fromStream(await request.send());
@@ -67,13 +70,14 @@ class BarangRepository {
 
   Future<bool> update(File image, Barang barang) async {
     String token = await Pref.getToken();
-    // var stream = new http.ByteStream(DelegatingStream.typed(image.openRead()));
-    print(barang.toJson());
+
     Map<String, String> headers = {
       'Authorization': token,
     };
     // return true;
     if (image == null) {
+      print(barang.toJson());
+
       http.Response res = await http.post(EndPoint.updateBarang(barang.id), body: barang.toJson(), headers: {'Authorization': token});
       print(res.body);
       if (res.statusCode == 200) {
@@ -82,19 +86,21 @@ class BarangRepository {
         return false;
       }
     } else {
-      final request = http.MultipartRequest('POST', Uri.parse(EndPoint.detailBarang(barang.id)));
+      print(headers);
+      final request = http.MultipartRequest('POST', Uri.parse(EndPoint.updateBarang(barang.id)));
       request.files.add(await http.MultipartFile.fromPath('foto', image.path));
       request.fields['nama_barang'] = barang.namaBarang;
       request.fields['stok'] = barang.stok;
       request.fields['status'] = barang.status;
+      request.fields['keterangan'] = barang.keterangan;
       request.headers.addAll(headers);
       // http.Response response = await http.Response.fromStream(await request.send());
       // send
       var response = await request.send();
       // listen for response
-      // response.stream.transform(utf8.decoder).listen((value) {
-      //   print(value);
-      // });
+      response.stream.transform(utf8.decoder).listen((value) {
+        print(value);
+      });
       if (response.statusCode == 200) {
         return true;
       } else {
@@ -213,7 +219,7 @@ class BarangRepository {
     }
   }
 
-  Future<bool> editPengeluaran(String id,Barang barang) async {
+  Future<bool> editPengeluaran(String id, Barang barang) async {
     String token = await Pref.getToken();
     final request = await http.post(EndPoint.editPengeluaran(id), body: barang.updarePengeluaran(), headers: {'Authorization': token});
 

@@ -123,41 +123,47 @@ class _ListBarangState extends State<ListBarang> {
               Row(
                 children: [
                   Container(
-                    width: 150,
+                    width: 140,
                     alignment: Alignment.center,
                     child: Text('Gambar'),
                   ),
                   Container(
-                    width: 155,
+                    width: 145,
                     alignment: Alignment.center,
                     child: Text('Nama'),
                   ),
                   Container(
-                    width: 120,
+                    width: 100,
                     alignment: Alignment.center,
-                    child: Text('Tanggal Masuk'),
+                    child: Text('Tgl Masuk'),
                   ),
                   Container(
-                    width: 120,
+                    width: 100,
                     alignment: Alignment.center,
                     child: Text('Jumlah Masuk'),
                     // total masuk bulan ini
                   ),
                   Container(
-                    width: 120,
+                    width: 100,
                     alignment: Alignment.center,
-                    child: Text('Tanggal Keluar'),
+                    child: Text('Tgl Keluar'),
                   ),
                   Container(
-                    width: 120,
+                    width: 100,
                     alignment: Alignment.center,
                     child: Text('Jumlah Keluar'),
                     // total keluar bulan ini
                   ),
                   Container(
-                    width: 75,
+                    width: 50,
                     alignment: Alignment.center,
                     child: Text('Stok'),
+                  ),
+                  Container(
+                    width: 125,
+                    alignment: Alignment.center,
+                    child: Text('Keterangan'),
+                    // total keluar bulan ini
                   ),
                   Container(
                     width: 50,
@@ -197,44 +203,63 @@ class _ListBarangState extends State<ListBarang> {
                                                 child: Row(
                                                   children: [
                                                     Container(
-                                                      width: 150,
+                                                      width: 140,
                                                       alignment: Alignment.center,
-                                                      child: Image.network(
-                                                        EndPoint.server + '' + snapshot.data[i].foto,
-                                                        width: 100,
-                                                        height: 100,
-                                                        fit: BoxFit.fill,
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          print('tapped');
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (_) => AlertDialog(
+                                                                    title: Text('Dialog Title'),
+                                                                    content: Image.network(
+                                                                      EndPoint.server + '' + snapshot.data[i].foto,
+                                                                      fit: BoxFit.fill,
+                                                                    ),
+                                                                  ));
+                                                        },
+                                                        child: Image.network(
+                                                          EndPoint.server + '' + snapshot.data[i].foto,
+                                                          width: 100,
+                                                          height: 100,
+                                                          fit: BoxFit.fill,
+                                                        ),
                                                       ),
                                                     ),
                                                     Container(
-                                                      width: 155,
+                                                      width: 145,
                                                       child: Text(snapshot.data[i].namaBarang),
                                                     ),
                                                     Container(
-                                                      width: 120,
+                                                      width: 100,
                                                       alignment: Alignment.center,
-                                                      child: Text(snapshot.data[i].tanggalMasuk == '-' ? snapshot.data[i].tanggalMasuk : Config.formatDateTime(snapshot.data[i].tanggalMasuk)),
+                                                      child: Text(snapshot.data[i].tanggalMasuk == '-' ? snapshot.data[i].tanggalMasuk : Config.formatDate(snapshot.data[i].tanggalMasuk)),
                                                     ),
                                                     Container(
-                                                      width: 120,
+                                                      width: 100,
                                                       alignment: Alignment.center,
                                                       child: Text(snapshot.data[i].jumlahMasuk.toString()),
                                                     ),
                                                     Container(
-                                                      width: 120,
+                                                      width: 100,
                                                       alignment: Alignment.center,
-                                                      child: Text(snapshot.data[i].tanggalKeluar == '-' ? snapshot.data[i].tanggalKeluar : Config.formatDateTime(snapshot.data[i].tanggalKeluar)),
+                                                      child: Text(snapshot.data[i].tanggalKeluar == '-' ? snapshot.data[i].tanggalKeluar : Config.formatDate(snapshot.data[i].tanggalKeluar)),
                                                     ),
                                                     Container(
-                                                      width: 120,
+                                                      width: 100,
                                                       alignment: Alignment.center,
                                                       child: Text(snapshot.data[i].jumlahKeluar.toString()),
                                                     ),
                                                     Container(
-                                                      width: 75,
+                                                      width: 50,
                                                       alignment: Alignment.center,
                                                       child: Text(snapshot.data[i].stok.toString()),
                                                     ),
+                                                    Container(
+                                                        width: 125,
+                                                        alignment: Alignment.center,
+                                                        child: Text(snapshot.data[i].keterangan == null || snapshot.data[i].keterangan == 'null' ? '-' : snapshot.data[i].keterangan,
+                                                            maxLines: 3, overflow: TextOverflow.fade, textAlign: TextAlign.center)),
                                                     Container(
                                                       width: 50,
                                                       child: Row(
@@ -293,43 +318,63 @@ class _ListBarangState extends State<ListBarang> {
                                           child: Row(
                                             children: [
                                               Container(
-                                                width: 150,
+                                                width: 140,
                                                 alignment: Alignment.center,
-                                                child: Image.network(
-                                                  EndPoint.server + '' + snapshot.data[i].foto,
-                                                  width: 100,
-                                                  height: 100,
-                                                  fit: BoxFit.fill,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    print('tapped');
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (_) => AlertDialog(
+                                                              title: Text('Dialog Title'),
+                                                              content: Image.network(
+                                                                EndPoint.server + '' + snapshot.data[i].foto,
+                                                                fit: BoxFit.fill,
+                                                              ),
+                                                            ));
+                                                  },
+                                                  child: Image.network(
+                                                    EndPoint.server + '' + snapshot.data[i].foto,
+                                                    width: 100,
+                                                    height: 100,
+                                                    fit: BoxFit.fill,
+                                                  ),
                                                 ),
                                               ),
                                               Container(
-                                                width: 155,
+                                                width: 145,
                                                 child: Text(snapshot.data[i].namaBarang),
                                               ),
                                               Container(
-                                                width: 120,
+                                                width: 100,
                                                 alignment: Alignment.center,
-                                                child: Text(snapshot.data[i].tanggalMasuk == '-' ? snapshot.data[i].tanggalMasuk : Config.formatDateTime(snapshot.data[i].tanggalMasuk)),
+                                                child: Text(snapshot.data[i].tanggalMasuk == '-' ? snapshot.data[i].tanggalMasuk : Config.formatDate(snapshot.data[i].tanggalMasuk)),
                                               ),
                                               Container(
-                                                width: 120,
+                                                width: 100,
                                                 alignment: Alignment.center,
                                                 child: Text(snapshot.data[i].jumlahMasuk.toString()),
                                               ),
                                               Container(
-                                                width: 120,
+                                                width: 100,
                                                 alignment: Alignment.center,
-                                                child: Text(snapshot.data[i].tanggalKeluar == '-' ? snapshot.data[i].tanggalKeluar : Config.formatDateTime(snapshot.data[i].tanggalKeluar)),
+                                                child: Text(snapshot.data[i].tanggalKeluar == '-' ? snapshot.data[i].tanggalKeluar : Config.formatDate(snapshot.data[i].tanggalKeluar)),
                                               ),
                                               Container(
-                                                width: 120,
+                                                width: 100,
                                                 alignment: Alignment.center,
                                                 child: Text(snapshot.data[i].jumlahKeluar.toString()),
                                               ),
                                               Container(
-                                                width: 75,
+                                                width: 50,
                                                 alignment: Alignment.center,
                                                 child: Text(snapshot.data[i].stok.toString()),
+                                              ),
+                                              Container(
+                                                width: 125,
+                                                alignment: Alignment.center,
+                                                child: Text(snapshot.data[i].keterangan == null || snapshot.data[i].keterangan == 'null' ? '-' : snapshot.data[i].keterangan,
+                                                    maxLines: 3, overflow: TextOverflow.fade, textAlign: TextAlign.center),
                                               ),
                                               Container(
                                                 width: 50,

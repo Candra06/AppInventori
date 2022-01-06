@@ -32,7 +32,7 @@ class Routes {
       case HISTORY_BARANG_KELUAR:
         return PageTransition(child: HistoriPengeluaran(), type: PageTransitionType.bottomToTop);
          case ADD_BARANG:
-        return PageTransition(child: TambahDataBarang(), type: PageTransitionType.bottomToTop);
+        return PageTransition(child: TambahDataBarang(tipe: 'tambah',), type: PageTransitionType.bottomToTop);
       case HISTORY_BARANG_MASUK:
         return PageTransition(child: HistoriPemasukan(), type: PageTransitionType.bottomToTop);
       case DETAIL_BARANG:
@@ -45,6 +45,7 @@ class Routes {
         return PageTransition(
             child: TambahDataBarang(
               data: settings.arguments,
+              tipe: 'edit',
             ),
             type: PageTransitionType.bottomToTop);
 

@@ -164,6 +164,19 @@ class Config {
     }
   }
 
+  static formatDate(tgl) {
+    try {
+      var date = tgl.split("T");
+      var bulan = date[0].toString().split('-');
+
+      String tanggal = bulan[2] + '/' + bulan[1] + '/' + bulan[0];
+
+      return tanggal;
+    } catch (e) {
+      return tgl.toString();
+    }
+  }
+
   static formatRupiah(int nominal) {
     try {
       return (new NumberFormat.currency(

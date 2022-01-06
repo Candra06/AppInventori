@@ -21,12 +21,13 @@ class TambahDataBarang extends StatefulWidget {
 class _TambahDataBarangState extends State<TambahDataBarang> {
   TextEditingController txtNama = new TextEditingController();
   TextEditingController txtJumlah = new TextEditingController();
+  TextEditingController txtKeterangan = new TextEditingController();
 
   File tmpFile;
 
   Future<File> file;
 
-  String fileName = '';
+  String fileName = '', tmpKeterangan = '';
 
   Future _getImage() async {
     final picker = ImagePicker();
@@ -75,8 +76,10 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
   }
 
   void getData() async {
+    print(widget.data.keterangan);
     txtJumlah.text = widget.data.stok;
     txtNama.text = widget.data.namaBarang;
+    txtKeterangan.text = widget.data.keterangan;
   }
 
   void addBarang() async {
@@ -87,6 +90,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     BarangRepository barangRepository = new BarangRepository();
     barang.namaBarang = txtNama.text;
     barang.stok = txtJumlah.text;
+    barang.keterangan = txtKeterangan.text.isEmpty ? '-' : txtKeterangan.text;
     barang.status = 'Tersedia';
 
     bool respon = await barangRepository.store(tmpFile, barang);
@@ -108,9 +112,11 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
       Config.loading(context);
     });
     Barang barang = new Barang();
+    tmpKeterangan = txtKeterangan.text.isEmpty ? '-' : txtKeterangan.text;
     BarangRepository barangRepository = new BarangRepository();
     barang.namaBarang = txtNama.text;
     barang.stok = txtJumlah.text;
+    barang.keterangan = tmpKeterangan;
     barang.status = 'Tersedia';
     barang.id = widget.data.id;
 
@@ -164,15 +170,21 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [Text('Jumlah Barang'), formInputType(txtJumlah, 'Jumlah Barang', TextInputType.number)],
                     ),
+                  )),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(left: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text('Keterangan'), formInputType(txtKeterangan, 'Keterangan', TextInputType.text)],
+                    ),
                   ))
                 ],
               ),
               SizedBox(
                 height: 30,
               ),
-              if (widget.data != null) ...{
-                Image.network(EndPoint.server + widget.data.foto)
-              } else if (fileName.isEmpty) ...{
+              if (fileName.isEmpty && widget.tipe == 'tambah') ...{
                 Container(
                   width: 150,
                   height: 150,
@@ -182,8 +194,10 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                     size: 50,
                   ),
                 )
-              } else ...{
+              } else if ((widget.tipe == 'edit' && fileName.isNotEmpty) || (widget.tipe == 'tambah' && fileName.isNotEmpty)) ...{
                 Image.file(tmpFile)
+              } else if (widget.data != null) ...{
+                Image.network(EndPoint.server + widget.data.foto),
               },
               SizedBox(
                 height: 30,
