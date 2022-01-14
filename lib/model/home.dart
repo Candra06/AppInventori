@@ -13,6 +13,8 @@ class Barang {
     this.image,
     this.status,
     this.keterangan,
+    this.hargaBarang,
+    this.ongkosPembuatan,
   });
 
   int id;
@@ -25,6 +27,8 @@ class Barang {
   String jumlahKeluar;
   String tanggalKeluar;
   String keterangan;
+  String hargaBarang;
+  String ongkosPembuatan;
   File image;
 
   factory Barang.fromJson(Map<String, dynamic> json) => Barang(
@@ -37,6 +41,8 @@ class Barang {
         tanggalMasuk: json["tanggal_masuk"] == null ? null : json["tanggal_masuk"],
         jumlahKeluar: json["jumlah_keluar"] == null ? null : json["jumlah_keluar"],
         tanggalKeluar: json["tanggal_keluar"] == null ? null : json["tanggal_keluar"],
+        hargaBarang: json["harga_barang"] == null ? null : json["harga_barang"],
+        ongkosPembuatan: json["ongkos_pembuatan"] == null ? null : json["ongkos_pembuatan"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,6 +50,8 @@ class Barang {
         "stok": stok == null ? null : stok,
         "status": status == null ? null : status,
         "keterangan": keterangan == null ? null : keterangan,
+        "harga_barang": hargaBarang == null ? null : hargaBarang,
+        "ongkos_pembuatan": ongkosPembuatan == null ? null : ongkosPembuatan,
       };
 
   Map<String, dynamic> addInventori() => {"id_barang": id == null ? null : id.toString(), "jumlah": stok == null ? null : stok};

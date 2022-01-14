@@ -50,6 +50,8 @@ class BarangRepository {
     request.fields['stok'] = barang.stok;
     request.fields['status'] = barang.status;
     request.fields['keterangan'] = barang.keterangan;
+    request.fields['harga_barang'] = barang.hargaBarang.toString();
+    request.fields['ongkos_pembuatan'] = barang.ongkosPembuatan.toString();
     request.headers.addAll(headers);
 
     // http.Response response = await http.Response.fromStream(await request.send());
@@ -58,9 +60,9 @@ class BarangRepository {
     // print(response.statusCode);
 
     // listen for response
-    // response.stream.transform(utf8.decoder).listen((value) {
-    //   print(value);
-    // });
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -93,6 +95,8 @@ class BarangRepository {
       request.fields['stok'] = barang.stok;
       request.fields['status'] = barang.status;
       request.fields['keterangan'] = barang.keterangan;
+      request.fields['harga_barang'] = barang.hargaBarang.toString();
+      request.fields['ongkos_pembuatan'] = barang.ongkosPembuatan.toString();
       request.headers.addAll(headers);
       // http.Response response = await http.Response.fromStream(await request.send());
       // send

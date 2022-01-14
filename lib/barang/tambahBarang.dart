@@ -22,6 +22,8 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
   TextEditingController txtNama = new TextEditingController();
   TextEditingController txtJumlah = new TextEditingController();
   TextEditingController txtKeterangan = new TextEditingController();
+  TextEditingController txtHarga = new TextEditingController();
+  TextEditingController txtOngkos = new TextEditingController();
 
   File tmpFile;
 
@@ -66,7 +68,6 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                   } else {
                     fileName = pickedFile.path.toString();
                     tmpFile = File(pickedFile.path);
-                    print(fileName);
                   }
                 });
               })
@@ -76,10 +77,13 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
   }
 
   void getData() async {
-    print(widget.data.keterangan);
+    print(widget.data.hargaBarang);
+    print(widget.data.ongkosPembuatan);
     txtJumlah.text = widget.data.stok;
     txtNama.text = widget.data.namaBarang;
     txtKeterangan.text = widget.data.keterangan;
+    txtHarga.text = widget.data.hargaBarang.toString();
+    txtOngkos.text = widget.data.ongkosPembuatan.toString();
   }
 
   void addBarang() async {
@@ -90,6 +94,8 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     BarangRepository barangRepository = new BarangRepository();
     barang.namaBarang = txtNama.text;
     barang.stok = txtJumlah.text;
+    barang.ongkosPembuatan = txtOngkos.text.isEmpty ? '0' : txtOngkos.text;
+    barang.hargaBarang = txtHarga.text.isEmpty ? '0' : txtHarga.text;
     barang.keterangan = txtKeterangan.text.isEmpty ? '-' : txtKeterangan.text;
     barang.status = 'Tersedia';
 
@@ -98,6 +104,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
       setState(() {
         Navigator.pop(context);
         Navigator.pushNamed(context, Routes.HOME);
+        Config.alert(1, 'Berhasil menambah barang');
       });
     } else {
       setState(() {
@@ -117,6 +124,8 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     barang.namaBarang = txtNama.text;
     barang.stok = txtJumlah.text;
     barang.keterangan = tmpKeterangan;
+    barang.ongkosPembuatan = txtOngkos.text.isEmpty ? '0' : txtOngkos.text;
+    barang.hargaBarang = txtHarga.text.isEmpty ? '0' : txtHarga.text;
     barang.status = 'Tersedia';
     barang.id = widget.data.id;
 
@@ -125,6 +134,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
       setState(() {
         Navigator.pop(context);
         Navigator.pushNamed(context, Routes.HOME);
+        Config.alert(1, 'Berhasil mengubah barang');
       });
     } else {
       setState(() {
@@ -179,6 +189,30 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                       children: [Text('Keterangan'), formInputType(txtKeterangan, 'Keterangan', TextInputType.text)],
                     ),
                   ))
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(right: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text('Harga Barang'), formInputType(txtHarga, 'Harga Barang', TextInputType.number)],
+                    ),
+                  )),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.only(left: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text('Ongkos Pembuatan'), formInputType(txtOngkos, 'Ongkos Pembuatan', TextInputType.number)],
+                    ),
+                  )),
+                  Expanded(child: Container())
                 ],
               ),
               SizedBox(

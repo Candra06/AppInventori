@@ -56,6 +56,8 @@ class DetailClass {
   DetailClass({
     this.id,
     this.namaBarang,
+    this.hargaBarang,
+    this.ongkosPembuatan,
     this.foto,
     this.stok,
     this.status,
@@ -68,6 +70,8 @@ class DetailClass {
   String foto;
   String stok;
   String status;
+  String hargaBarang;
+  String ongkosPembuatan;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -77,6 +81,8 @@ class DetailClass {
         foto: json["foto"] == null ? null : json["foto"],
         stok: json["stok"] == null ? null : json["stok"],
         status: json["status"] == null ? null : json["status"],
+        hargaBarang: json["harga_barang"] == null ? null : json["harga_barang"],
+        ongkosPembuatan: json["ongkos_pembuatan"] == null ? null : json["ongkos_pembuatan"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );
