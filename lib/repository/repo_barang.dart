@@ -233,4 +233,7 @@ class BarangRepository {
       return false;
     }
   }
+
+  // offline mode
+  
 }

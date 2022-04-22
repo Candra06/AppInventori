@@ -2,34 +2,9 @@
 //
 //     final detail = detailFromJson(jsonString);
 
-import 'dart:convert';
-
-Detail detailFromJson(String str) => Detail.fromJson(json.decode(str));
-
-String detailToJson(Detail data) => json.encode(data.toJson());
 
 class Detail {
   Detail({
-    this.statusCode,
-    this.data,
-  });
-
-  int statusCode;
-  Data data;
-
-  factory Detail.fromJson(Map<String, dynamic> json) => Detail(
-        statusCode: json["status_code"] == null ? null : json["status_code"],
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "status_code": statusCode == null ? null : statusCode,
-        "data": data == null ? null : data.toJson(),
-      };
-}
-
-class Data {
-  Data({
     this.detail,
     this.pemasukan,
     this.pengeluaran,
@@ -39,7 +14,7 @@ class Data {
   List<Pemasukan> pemasukan;
   List<Pengeluaran> pengeluaran;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory Detail.fromJson(Map<String, dynamic> json) => Detail(
         detail: json["detail"] == null ? null : DetailClass.fromJson(json["detail"]),
         pemasukan: json["pemasukan"] == null ? null : List<Pemasukan>.from(json["pemasukan"].map((x) => Pemasukan.fromJson(x))),
         pengeluaran: json["pengeluaran"] == null ? null : List<Pengeluaran>.from(json["pengeluaran"].map((x) => Pengeluaran.fromJson(x))),
@@ -79,10 +54,10 @@ class DetailClass {
         id: json["id"] == null ? null : json["id"],
         namaBarang: json["nama_barang"] == null ? null : json["nama_barang"],
         foto: json["foto"] == null ? null : json["foto"],
-        stok: json["stok"] == null ? null : json["stok"],
+        stok: json["stok"] == null ? null : json["stok"].toString(),
         status: json["status"] == null ? null : json["status"],
-        hargaBarang: json["harga_barang"] == null ? null : json["harga_barang"],
-        ongkosPembuatan: json["ongkos_pembuatan"] == null ? null : json["ongkos_pembuatan"],
+        hargaBarang: json["harga_barang"] == null ? null : json["harga_barang"].toString(),
+        ongkosPembuatan: json["ongkos_pembuatan"] == null ? null : json["ongkos_pembuatan"].toString(),
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );
@@ -115,8 +90,8 @@ class Pemasukan {
 
   factory Pemasukan.fromJson(Map<String, dynamic> json) => Pemasukan(
         id: json["id"] == null ? null : json["id"],
-        barangId: json["barang_id"] == null ? null : json["barang_id"],
-        jumlah: json["jumlah"] == null ? null : json["jumlah"],
+        barangId: json["barang_id"] == null ? null : json["barang_id"].toString(),
+        jumlah: json["jumlah"] == null ? null : json["jumlah"].toString(),
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );
@@ -147,8 +122,8 @@ class Pengeluaran {
 
   factory Pengeluaran.fromJson(Map<String, dynamic> json) => Pengeluaran(
         id: json["id"] == null ? null : json["id"],
-        barangId: json["barang_id"] == null ? null : json["barang_id"],
-        jumlah: json["jumlah"] == null ? null : json["jumlah"],
+        barangId: json["barang_id"] == null ? null : json["barang_id"].toString(),
+        jumlah: json["jumlah"] == null ? null : json["jumlah"].toString(),
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );

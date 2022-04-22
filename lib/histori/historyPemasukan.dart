@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:inventory/helper/config.dart';
+import 'package:inventory/helper/database.dart';
 import 'package:inventory/layout/sidemenu.dart';
 import 'package:inventory/modal/tambahPemasukan.dart';
 import 'package:inventory/model/histori.dart';
 import 'package:inventory/repository/repo_barang.dart';
+import 'package:sqflite/sqlite_api.dart';
 
 class HistoriPemasukan extends StatefulWidget {
   const HistoriPemasukan({Key key}) : super(key: key);
@@ -13,11 +15,27 @@ class HistoriPemasukan extends StatefulWidget {
 }
 
 class _HistoriPemasukanState extends State<HistoriPemasukan> {
+  // get connection from db
+  Database db;
+  Connection conn = new Connection();
+
   List<String> _listBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   List<String> _listValBulan = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
   String _valBulan, _valIndex;
   Future<List<Histori>> _listData;
   BarangRepository barangRepository = new BarangRepository();
+
+  Future<List<Histori>> getHistori() async {
+    final _data = await conn.listHistori('pemasukan');
+
+    return _data;
+  }
+
+  Future<List<Histori>> filterData(String bulan) async {
+    final _data = await conn.filterHistori('pemasukan', bulan);
+
+    return _data;
+  }
 
   void getData() async {
     _listData = barangRepository.listPemasukan();
@@ -25,32 +43,54 @@ class _HistoriPemasukanState extends State<HistoriPemasukan> {
 
   void filter(String bulan) async {
     print(_valIndex);
-    _listData = barangRepository.filterPemasukan(bulan);
+    _listData = filterData(bulan);
+    // _listData = barangRepository.filterPemasukan(bulan);
   }
 
   void delete(String id) async {
     setState(() {
       Config.loading(context);
     });
-    bool response = await barangRepository.deletePemasukan(id);
-    if (response == true) {
+
+    final initDB = conn.initDB();
+    // bool response = await barangRepository.deletePemasukan(id);
+    try {
+      initDB.then((value) {
+        conn.deleteHistory('pemasukan', id);
+      });
       setState(() {
         Navigator.pop(context);
         Config.alert(1, 'Berhasil menghapus data');
-        getData();
+        // getData();
+        _listData = getHistori();
       });
-    } else {
+    } catch (e) {
       setState(() {
         Navigator.pop(context);
-        Config.alert(2, 'Gagals menghapus data');
+        Config.alert(2, 'Gagal menghapus data');
       });
     }
+
+    // bool response = await barangRepository.deletePemasukan(id);
+    // if (response == true) {
+    //   setState(() {
+    //     Navigator.pop(context);
+    //     Config.alert(1, 'Berhasil menghapus data');
+    //     getData();
+    //   });
+    // } else {
+    //   setState(() {
+    //     Navigator.pop(context);
+    //     Config.alert(2, 'Gagals menghapus data');
+    //   });
+    // }
   }
 
   @override
   void initState() {
-    getData();
+    // getData();
     super.initState();
+    _listData = getHistori();
   }
 
   showAlertDialog(BuildContext context, String id) {
@@ -137,6 +177,7 @@ class _HistoriPemasukanState extends State<HistoriPemasukan> {
                                 setState(() {
                                   _valIndex = _listValBulan[_listBulan.indexOf(val)];
                                   _valBulan = val;
+                                  filter(_valIndex);
                                 });
                               },
                             )

@@ -1,9 +1,9 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:inventory/barang/listBarang.dart';
 import 'package:inventory/helper/config.dart';
+import 'package:inventory/helper/database.dart';
 import 'package:inventory/helper/input.dart';
 import 'package:inventory/model/auth.dart';
 import 'package:inventory/repository/auth_repository.dart';
@@ -18,34 +18,35 @@ class _LoginPINState extends State<LoginPIN> {
   TextEditingController txtUsername = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
   // ..text = "123456";
-
+  Connection conn = new Connection();
   var obsuced = true;
 
   void login() async {
     setState(() {
       Config.loading(context);
     });
-    AuthRepository authRepository = new AuthRepository();
-    Auth _auth = new Auth();
-    _auth.username = txtUsername.text;
-    _auth.pin = txtPassword.text;
+    conn.initDB();
+    // AuthRepository authRepository = new AuthRepository();
+    // Auth _auth = new Auth();
+    // _auth.username = txtUsername.text;
+    // _auth.pin = txtPassword.text;
 
-    bool respon = await authRepository.login(_auth);
-    if (respon == true) {
-      setState(() {
-        Navigator.pop(context);
-        Config.alert(1, 'Login Berhasil');
-        Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
-      });
-    } else {
-      setState(() {
-        Navigator.pop(context);
-        Config.alert(2, 'Login gagal');
-      });
-    }
+    // bool respon = await authRepository.login(_auth);
+    // if (respon == true) {
+    //   setState(() {
+    //     Navigator.pop(context);
+    //     Config.alert(1, 'Login Berhasil');
+    Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
+    //   });
+    // } else {
+    //   setState(() {
+    //     Navigator.pop(context);
+    //     Config.alert(2, 'Login gagal');
+    //   });
+    // }
   }
 
-   Future<bool> _onWillPop() async {
+  Future<bool> _onWillPop() async {
     return (await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
@@ -172,11 +173,11 @@ class _LoginPINState extends State<LoginPIN> {
                   buttonColor: Colors.blue,
                   child: TextButton(
                     onPressed: () {
-                      if (txtUsername.text.isEmpty || txtPassword.text.isEmpty) {
-                        Config.alert(0, 'Lengkapi username dan password');
-                      } else {
-                        login();
-                      }
+                      // if (txtUsername.text.isEmpty || txtPassword.text.isEmpty) {
+                      //   Config.alert(0, 'Lengkapi username dan password');
+                      // } else {
+                      login();
+                      // }
                     },
                     child: Center(
                         child: Text(

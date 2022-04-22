@@ -23,4 +23,10 @@ class Pref {
     String id = preferences.getString('id');
     return id;
   }
+
+  static getPath() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String direktori = preferences.getString('direktori');
+    return direktori;
+  }
 }

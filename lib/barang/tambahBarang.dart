@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:inventory/helper/config.dart';
+import 'package:inventory/helper/database.dart';
 import 'package:inventory/helper/input.dart';
 import 'package:inventory/helper/network.dart';
+import 'package:inventory/helper/pref.dart';
 import 'package:inventory/helper/route.dart';
 import 'package:inventory/model/home.dart';
 import 'package:inventory/repository/repo_barang.dart';
@@ -24,14 +26,17 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
   TextEditingController txtKeterangan = new TextEditingController();
   TextEditingController txtHarga = new TextEditingController();
   TextEditingController txtOngkos = new TextEditingController();
-
+  Connection db = new Connection();
   File tmpFile;
-
+  String url = '';
   Future<File> file;
 
   String fileName = '', tmpKeterangan = '';
 
   Future _getImage() async {
+    url = await Pref.getPath();
+
+    print(url);
     final picker = ImagePicker();
     PickedFile pickedFile;
     final imgSrc = await showDialog<ImageSource>(
@@ -46,15 +51,17 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
 
               pickedFile = await picker.getImage(source: ImageSource.camera);
 
-              setState(() {
-                if (pickedFile?.path == null) {
+              if (pickedFile?.path == null) {
+                setState(() {
                   fileName = '';
-                } else {
-                  fileName = pickedFile.path.toString();
-                  tmpFile = File(pickedFile.path);
-                  print(fileName);
-                }
-              });
+                });
+              } else {
+                fileName = pickedFile.path.split('/').last;
+                // fileName = pickedFile.path.toString();
+                tmpFile = File(pickedFile.path);
+                tmpFile = await tmpFile.copy(url + '/$fileName');
+                setState(() {});
+              }
             },
           ),
           MaterialButton(
@@ -62,14 +69,17 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
               onPressed: () async {
                 Navigator.pop(context, ImageSource.gallery);
                 pickedFile = await picker.getImage(source: ImageSource.gallery);
-                setState(() {
-                  if (pickedFile?.path == null) {
+                if (pickedFile?.path == null) {
+                  setState(() {
                     fileName = '';
-                  } else {
-                    fileName = pickedFile.path.toString();
+                  });
+                } else {
+                  fileName = pickedFile.path.split('/').last;
+                    // fileName = pickedFile.path.toString();
                     tmpFile = File(pickedFile.path);
-                  }
-                });
+                    tmpFile = await tmpFile.copy(url + '/$fileName');
+                  
+                }
               })
         ],
       ),
@@ -84,6 +94,37 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     txtKeterangan.text = widget.data.keterangan;
     txtHarga.text = widget.data.hargaBarang.toString();
     txtOngkos.text = widget.data.ongkosPembuatan.toString();
+    print(Pref.getPath());
+  }
+
+  void addOffline() async {
+    setState(() {
+      Config.loading(context);
+    });
+    Barang barang = new Barang();
+    final initDB = db.initDB();
+    barang.namaBarang = txtNama.text;
+    barang.stok = txtJumlah.text;
+    barang.ongkosPembuatan = txtOngkos.text.isEmpty ? '0' : txtOngkos.text;
+    barang.hargaBarang = txtHarga.text.isEmpty ? '0' : txtHarga.text;
+    barang.keterangan = txtKeterangan.text.isEmpty ? '-' : txtKeterangan.text;
+    barang.status = 'Tersedia';
+    try {
+      initDB.then((value) {
+        db.inputBarang(barang);
+      });
+      setState(() {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, Routes.HOME);
+        Config.alert(1, 'Berhasil menambah barang');
+      });
+    } catch (e) {
+      setState(() {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, Routes.HOME);
+        Config.alert(0, e.toString());
+      });
+    }
   }
 
   void addBarang() async {
@@ -149,6 +190,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     if (widget.data != null) {
       getData();
     }
+
     super.initState();
   }
 
@@ -274,14 +316,17 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                       Config.alert(0, 'Nama tidak boleh kosong');
                     } else if (txtJumlah.text.isEmpty) {
                       Config.alert(0, 'Jumlah tidak boleh kosong');
-                    } else if (widget.data == null && tmpFile.path.toString().isEmpty) {
-                      Config.alert(0, 'Foto tidak boleh kosong');
-                    } else {
-                      if (widget.data == null) {
-                        addBarang();
-                      } else {
-                        editBarang();
-                      }
+                    }
+                    // else if (widget.data == null && tmpFile.path.toString().isEmpty) {
+                    //   Config.alert(0, 'Foto tidak boleh kosong');
+                    // }
+                    else {
+                      addOffline();
+                      // if (widget.data == null) {
+                      //   addBarang();
+                      // } else {
+                      //   editBarang();
+                      // }
                     }
                   },
                 ),

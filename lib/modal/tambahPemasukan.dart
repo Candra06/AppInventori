@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inventory/helper/config.dart';
+import 'package:inventory/helper/database.dart';
 import 'package:inventory/helper/input.dart';
 import 'package:inventory/helper/route.dart';
 import 'package:inventory/model/home.dart';
@@ -17,6 +18,64 @@ class TambahPemasukan extends StatefulWidget {
 }
 
 class _TambahPemasukanState extends State<TambahPemasukan> {
+  Connection db = new Connection();
+
+  void addOffline() async {
+    setState(() {
+      Config.loading(context);
+    });
+    Barang barang = new Barang();
+    final initDB = db.initDB();
+
+    barang.id = int.parse(widget.id);
+    barang.stok = txtJumlah.text;
+
+    try {
+      initDB.then((value) {
+        db.addPemasukan(int.parse(widget.id), barang);
+      });
+      setState(() {
+        Config.alert(1, 'Berhasil menambah pemasukan');
+        Navigator.pop(context);
+
+        Navigator.pushNamed(context, Routes.HOME);
+      });
+    } catch (e) {
+      setState(() {
+        Navigator.pop(context);
+        Config.alert(0, 'Gagal menambah pemasukan');
+      });
+    }
+  }
+
+  void editOffline() async {
+    setState(() {
+      Config.loading(context);
+    });
+    Barang barang = new Barang();
+    final initDB = db.initDB();
+
+    barang.id = int.parse(widget.id);
+    barang.stok = txtJumlah.text;
+
+    try {
+      initDB.then((value) {
+        db.updatePemasukan(int.parse(widget.id), barang);
+      });
+      setState(() {
+        Config.alert(1, 'Berhasil mengubah pengeluaran');
+        Navigator.pop(context);
+
+        Navigator.pushNamed(context, Routes.HOME);
+      });
+    } catch (e) {
+      setState(() {
+        Navigator.pop(context);
+        Config.alert(0, 'Gagal mengubah pengeluaran');
+      });
+    }
+  }
+
   void addPemasukan() async {
     setState(() {
       Config.loading(context);
@@ -126,9 +185,11 @@ class _TambahPemasukanState extends State<TambahPemasukan> {
                             Config.alert(0, 'Jumlah harus diisi');
                           } else {
                             if (widget.tipe == 'Update') {
-                              editPemasukan();
+                              // editPemasukan();
+                              editOffline();
                             } else {
-                              addPemasukan();
+                              // addPemasukan();
+                              addOffline();
                             }
                           }
                         },

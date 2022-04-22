@@ -152,7 +152,7 @@ class Config {
 
   static formatDateTime(tgl) {
     try {
-      var date = tgl.split("T");
+      var date = tgl.split(" ");
 
       var bln = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
       var bulan = date[0].toString().split('-');
@@ -166,7 +166,7 @@ class Config {
 
   static formatDate(tgl) {
     try {
-      var date = tgl.split("T");
+      var date = tgl.split(" ");
       var bulan = date[0].toString().split('-');
 
       String tanggal = bulan[2] + '/' + bulan[1] + '/' + bulan[0];

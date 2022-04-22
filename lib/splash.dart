@@ -2,9 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:inventory/barang/listBarang.dart';
+import 'package:inventory/helper/database.dart';
 import 'package:inventory/helper/pref.dart';
 import 'package:inventory/login.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key key}) : super(key: key);
@@ -17,6 +22,60 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   AnimationController _controller;
   Animation<double> _animation;
   String token = '';
+
+  permissionServiceCall() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+  }
+
+  /*Permission services*/
+  Future<Map<Permission, PermissionStatus>> permissionServices() async {
+    // You can request multiple permissions at once.
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+      // Permission.camera,
+      // Permission.microphone,
+      //add more permission to request here.
+    ].request();
+
+    if (statuses[Permission.storage].isPermanentlyDenied) {
+      openAppSettings();
+      setState(() {});
+    } else {
+      if (statuses[Permission.storage].isDenied) {
+        permissionServiceCall();
+      }
+    }
+
+    return statuses;
+  }
+
+  _createFolder() async {
+    final folderName = "inventory";
+    final directory = await getExternalStorageDirectory();
+    final fold = await getApplicationDocumentsDirectory();
+    String folder = directory.path.toString().replaceAll('files', 'databases');
+    print("path baru " + folder);
+    print("path baru " + fold.path);
+    final path = Directory("storage/emulated/0/$folderName/database");
+    final pathImage = Directory("storage/emulated/0/$folderName/foto");
+    // final path = Directory(folder);
+    print(path);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if ((await path.exists())) {
+      print("exist");
+      pref.setString("direktori", "storage/emulated/0/$folderName/foto");
+      pref.setString("db", "storage/emulated/0/$folderName/database");
+    } else {
+      print("not exist");
+      path.create();
+      pathImage.create();
+      pref.setString("direktori", "storage/emulated/0/$folderName/foto");
+      pref.setString("db", "storage/emulated/0/$folderName/database");
+    }
+  }
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -41,18 +100,18 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   @override
   void initState() {
+    
     _controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this, value: 0.1);
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-
     _controller.forward();
 
     Future.delayed(Duration(seconds: 3), () async {
-      String token = await Pref.getToken();
-      if (token == null || token == 'null') {
-        Navigator.of(context).pushReplacement(PageTransition(child: LoginPIN(), type: PageTransitionType.fade));
-      } else {
-        Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
-      }
+      // String token = await Pref.getToken();
+      // if (token == null || token == 'null') {
+      //   Navigator.of(context).pushReplacement(PageTransition(child: LoginPIN(), type: PageTransitionType.fade));
+      // } else {
+      // }
+      Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
 
       //   // }
     });
