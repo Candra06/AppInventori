@@ -31,7 +31,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
   String url = '';
   Future<File> file;
 
-  String fileName = '', tmpKeterangan = '';
+  String fileName = '', tmpKeterangan = '', namaFoto = '';
 
   Future _getImage() async {
     url = await Pref.getPath();
@@ -57,10 +57,13 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                 });
               } else {
                 fileName = pickedFile.path.split('/').last;
+                namaFoto = pickedFile.path.split('/').last;
                 // fileName = pickedFile.path.toString();
                 tmpFile = File(pickedFile.path);
-                tmpFile = await tmpFile.copy(url + '/$fileName');
-                setState(() {});
+                tmpFile = await tmpFile.copy('$url/$fileName');
+                setState(() {
+                  tmpFile = File(pickedFile.path);
+                });
               }
             },
           ),
@@ -75,10 +78,13 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                   });
                 } else {
                   fileName = pickedFile.path.split('/').last;
-                    // fileName = pickedFile.path.toString();
+                  namaFoto = pickedFile.path.split('/').last;
+                  // fileName = pickedFile.path.toString();
+                  tmpFile = File(pickedFile.path);
+                  tmpFile = await tmpFile.copy('$url/$fileName');
+                  setState(() {
                     tmpFile = File(pickedFile.path);
-                    tmpFile = await tmpFile.copy(url + '/$fileName');
-                  
+                  });
                 }
               })
         ],
@@ -87,14 +93,19 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
   }
 
   void getData() async {
+    var tmpUrl = await Pref.getPath();
+    setState(() {
+      url = tmpUrl;
+    });
     print(widget.data.hargaBarang);
-    print(widget.data.ongkosPembuatan);
+    print(widget.data.foto);
     txtJumlah.text = widget.data.stok;
+    namaFoto = widget.data.foto;
     txtNama.text = widget.data.namaBarang;
     txtKeterangan.text = widget.data.keterangan;
     txtHarga.text = widget.data.hargaBarang.toString();
     txtOngkos.text = widget.data.ongkosPembuatan.toString();
-    print(Pref.getPath());
+    // print(Pref.getPath());
   }
 
   void addOffline() async {
@@ -105,6 +116,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     final initDB = db.initDB();
     barang.namaBarang = txtNama.text;
     barang.stok = txtJumlah.text;
+    barang.foto = fileName;
     barang.ongkosPembuatan = txtOngkos.text.isEmpty ? '0' : txtOngkos.text;
     barang.hargaBarang = txtHarga.text.isEmpty ? '0' : txtHarga.text;
     barang.keterangan = txtKeterangan.text.isEmpty ? '-' : txtKeterangan.text;
@@ -112,6 +124,37 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
     try {
       initDB.then((value) {
         db.inputBarang(barang);
+      });
+      setState(() {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, Routes.HOME);
+        Config.alert(1, 'Berhasil menambah barang');
+      });
+    } catch (e) {
+      setState(() {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, Routes.HOME);
+        Config.alert(0, e.toString());
+      });
+    }
+  }
+
+  void editOffline() async {
+    setState(() {
+      Config.loading(context);
+    });
+    Barang barang = new Barang();
+    final initDB = db.initDB();
+    barang.namaBarang = txtNama.text;
+    barang.stok = txtJumlah.text;
+    barang.foto = namaFoto;
+    barang.ongkosPembuatan = txtOngkos.text.isEmpty ? '0' : txtOngkos.text;
+    barang.hargaBarang = txtHarga.text.isEmpty ? '0' : txtHarga.text;
+    barang.keterangan = txtKeterangan.text.isEmpty ? '-' : txtKeterangan.text;
+    barang.status = 'Tersedia';
+    try {
+      initDB.then((value) {
+        db.updateBarang(widget.data.id, barang);
       });
       setState(() {
         Navigator.pop(context);
@@ -270,10 +313,15 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                     size: 50,
                   ),
                 )
-              } else if ((widget.tipe == 'edit' && fileName.isNotEmpty) || (widget.tipe == 'tambah' && fileName.isNotEmpty)) ...{
+              } else if ((widget.tipe == 'edit' && namaFoto.isNotEmpty) || (widget.tipe == 'tambah' && fileName.isNotEmpty)) ...{
                 Image.file(tmpFile)
               } else if (widget.data != null) ...{
-                Image.network(EndPoint.server + widget.data.foto),
+                Image.file(
+                  File("$url/${widget.data.foto}"),
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.fill,
+                )
               },
               SizedBox(
                 height: 30,
@@ -321,12 +369,13 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                     //   Config.alert(0, 'Foto tidak boleh kosong');
                     // }
                     else {
-                      addOffline();
-                      // if (widget.data == null) {
-                      //   addBarang();
-                      // } else {
-                      //   editBarang();
-                      // }
+                      if (widget.data == null) {
+                        addOffline();
+                        // addBarang();
+                      } else {
+                        editOffline();
+                        // editBarang();
+                      }
                     }
                   },
                 ),

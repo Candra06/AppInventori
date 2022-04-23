@@ -32,7 +32,7 @@ class Connection {
       join(databasesPath, 'inventory.db'),
       onCreate: (db, version) async {
         db.execute(
-            "create table barang (id INTEGER primary key autoincrement, nama_barang TEXT not null, stok INTEGER not null, harga_barang INTEGER not null, ongkos_pembuatan INTEGER not null, status TEXT not null, keterangan TEXT not null)");
+            "create table barang (id INTEGER primary key autoincrement, nama_barang TEXT not null, foto TEXT not null, stok INTEGER not null, harga_barang INTEGER not null, ongkos_pembuatan INTEGER not null, status TEXT not null, keterangan TEXT not null)");
         db.execute("CREATE TABLE pemasukan (id INTEGER PRIMARY KEY autoincrement, barang_id INTEGER not null, jumlah INTEGER not null, created_at TEXT not null, updated_at TEXT not null)");
         db.execute("CREATE TABLE pengeluaran (id INTEGER PRIMARY KEY autoincrement,barang_id INTEGER not null,jumlah INTEGER not null, created_at TEXT not null,updated_at TEXT not null)");
       },
@@ -65,6 +65,7 @@ class Connection {
       final List<Map<String, dynamic>> pengeluaran = await _db.query("pengeluaran", where: "barang_id = ?", whereArgs: [list[i]['id']], orderBy: 'id DESC');
       tmp['id'] = list[i]['id'];
       tmp['nama_barang'] = list[i]['nama_barang'];
+      tmp['foto'] = list[i]['foto'];
       tmp['harga_barang'] = list[i]['harga_barang'];
       tmp['ongkos_pembuatan'] = list[i]['ongkos_pembuatan'];
       tmp['stok'] = list[i]['stok'];
@@ -85,12 +86,12 @@ class Connection {
       }
       result.add(tmp);
     }
-
     print(result);
     return List.generate(result.length, (i) {
       return Barang(
           id: result[i]['id'],
           namaBarang: result[i]['nama_barang'],
+          foto: result[i]['foto'],
           hargaBarang: result[i]['harga_barang'].toString(),
           ongkosPembuatan: result[i]['ongkos_pembuatan'].toString(),
           stok: result[i]['stok'].toString(),
@@ -126,15 +127,16 @@ class Connection {
     _db.insert('barang', barang.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<void> updateBarang(Barang barang) async {
+  Future<bool> updateBarang(int id,Barang barang) async {
     final Database _db = db;
-
-    await _db.update(
-      'barang',
-      barang.toJson(),
-      where: "id = ?",
-      whereArgs: [barang.id],
-    );
+    print(barang.id);
+    try {
+      await _db.update('barang', barang.toJson(), where: "id = ?", whereArgs: [id], conflictAlgorithm: ConflictAlgorithm.replace);
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
   }
 
   Future<void> deleteBarang(int id) async {

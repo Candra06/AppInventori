@@ -80,7 +80,7 @@ class BarangRepository {
     if (image == null) {
       print(barang.toJson());
 
-      http.Response res = await http.post(EndPoint.updateBarang(barang.id), body: barang.toJson(), headers: {'Authorization': token});
+      http.Response res = await http.post(Uri.parse(EndPoint.updateBarang(barang.id)), body: barang.toJson(), headers: {'Authorization': token});
       print(res.body);
       if (res.statusCode == 200) {
         return true;
@@ -115,7 +115,7 @@ class BarangRepository {
 
   Future<bool> addPemasukan(Barang barang) async {
     String token = await Pref.getToken();
-    final request = await http.post(EndPoint.addPemasukan, body: barang.addInventori(), headers: {'Authorization': token});
+    final request = await http.post(Uri.parse(EndPoint.addPemasukan), body: barang.addInventori(), headers: {'Authorization': token});
 
     if (request.statusCode == 200) {
       return true;
@@ -126,7 +126,7 @@ class BarangRepository {
 
   Future<bool> addPengeluaran(Barang barang) async {
     String token = await Pref.getToken();
-    final request = await http.post(EndPoint.addPengeluaran, body: barang.addInventori(), headers: {'Authorization': token});
+    final request = await http.post(Uri.parse(EndPoint.addPengeluaran), body: barang.addInventori(), headers: {'Authorization': token});
 
     if (request.statusCode == 200) {
       return true;
@@ -137,7 +137,7 @@ class BarangRepository {
 
   Future<List<Histori>> listPengeluaran() async {
     String token = await Pref.getToken();
-    final request = await http.get(EndPoint.listPengeluaran, headers: {'Authorization': token});
+    final request = await http.get(Uri.parse(EndPoint.listPengeluaran), headers: {'Authorization': token});
     var data = json.decode(request.body);
     print(data);
     List<dynamic> list = data['data'];
@@ -151,7 +151,7 @@ class BarangRepository {
 
   Future<List<Histori>> listPemasukan() async {
     String token = await Pref.getToken();
-    final request = await http.get(EndPoint.listPemasukan, headers: {'Authorization': token});
+    final request = await http.get(Uri.parse(EndPoint.listPemasukan), headers: {'Authorization': token});
     var data = json.decode(request.body);
     print(data);
     List<dynamic> list = data['data'];
@@ -165,7 +165,7 @@ class BarangRepository {
   Future<List<Histori>> filterPengeluaran(String tanggal) async {
     print(tanggal);
     String token = await Pref.getToken();
-    final request = await http.get(EndPoint.filterPengeluaran(tanggal), headers: {'Authorization': token});
+    final request = await http.get(Uri.parse(EndPoint.filterPengeluaran(tanggal)), headers: {'Authorization': token});
     var data = json.decode(request.body);
     print(data);
     List<dynamic> list = data['data'];
@@ -179,7 +179,7 @@ class BarangRepository {
   Future<List<Histori>> filterPemasukan(String tanggal) async {
     print(tanggal);
     String token = await Pref.getToken();
-    final request = await http.get(EndPoint.filterPemasukan(tanggal), headers: {'Authorization': token});
+    final request = await http.get(Uri.parse(EndPoint.filterPemasukan(tanggal)), headers: {'Authorization': token});
     var data = json.decode(request.body);
     print(data);
     List<dynamic> list = data['data'];
@@ -192,7 +192,7 @@ class BarangRepository {
 
   Future<bool> deletePemasukan(String id) async {
     String token = await Pref.getToken();
-    final request = await http.get(EndPoint.deletePemasukan(id), headers: {'Authorization': token});
+    final request = await http.get(Uri.parse(EndPoint.deletePemasukan(id)), headers: {'Authorization': token});
 
     if (request.statusCode == 200) {
       return true;
@@ -203,7 +203,7 @@ class BarangRepository {
 
   Future<bool> deletePengeluaran(String id) async {
     String token = await Pref.getToken();
-    final request = await http.get(EndPoint.deletePengeluaran(id), headers: {'Authorization': token});
+    final request = await http.get(Uri.parse(EndPoint.deletePengeluaran(id)), headers: {'Authorization': token});
 
     if (request.statusCode == 200) {
       return true;
@@ -214,7 +214,7 @@ class BarangRepository {
 
   Future<bool> editPemasukan(String id, Barang barang) async {
     String token = await Pref.getToken();
-    final request = await http.post(EndPoint.editPemasukan(id), body: barang.updatePemasukan(), headers: {'Authorization': token});
+    final request = await http.post(Uri.parse(EndPoint.editPemasukan(id)), body: barang.updatePemasukan(), headers: {'Authorization': token});
 
     if (request.statusCode == 200) {
       return true;
@@ -225,7 +225,7 @@ class BarangRepository {
 
   Future<bool> editPengeluaran(String id, Barang barang) async {
     String token = await Pref.getToken();
-    final request = await http.post(EndPoint.editPengeluaran(id), body: barang.updarePengeluaran(), headers: {'Authorization': token});
+    final request = await http.post(Uri.parse(EndPoint.editPengeluaran(id)), body: barang.updarePengeluaran(), headers: {'Authorization': token});
 
     if (request.statusCode == 200) {
       return true;

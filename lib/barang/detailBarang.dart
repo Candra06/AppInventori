@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:inventory/helper/config.dart';
 import 'package:inventory/helper/database.dart';
 import 'package:inventory/helper/network.dart';
+import 'package:inventory/helper/pref.dart';
 import 'package:inventory/model/detail.dart';
 import 'package:inventory/model/home.dart';
 import 'package:inventory/repository/repo_barang.dart';
@@ -22,6 +25,7 @@ class _DetailBarangState extends State<DetailBarang> with SingleTickerProviderSt
   TabController controller;
   BarangRepository barangRepository = new BarangRepository();
   bool load = true;
+  String url;
 
   Future<Detail> getDetail() async {
     print(widget.barang.id);
@@ -30,11 +34,13 @@ class _DetailBarangState extends State<DetailBarang> with SingleTickerProviderSt
   }
 
   void getData() async {
+    var tmpUrl = await Pref.getPath();
     setState(() {
+      url = tmpUrl;
       load = true;
     });
 
-    _detail = barangRepository.detailBarang(widget.barang.id.toString());
+    // _detail = barangRepository.detailBarang(widget.barang.id.toString());
     setState(() {
       load = false;
     });
@@ -43,7 +49,7 @@ class _DetailBarangState extends State<DetailBarang> with SingleTickerProviderSt
   @override
   void initState() {
     controller = new TabController(vsync: this, length: 2);
-    // getData();
+    getData();
     _detail = getDetail();
     super.initState();
   }
@@ -81,14 +87,15 @@ class _DetailBarangState extends State<DetailBarang> with SingleTickerProviderSt
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Container(
-                            //   width: 500,
-                            //   height: 500,
-                            //   child: Image.network(
-                            //     EndPoint.server + widget.barang.foto,
-                            //     fit: BoxFit.fill,
-                            //   ),
-                            // ),
+                            Container(
+                                width: 500,
+                                height: 500,
+                                child: Image.file(
+                                  File("$url/${widget.barang.foto}"),
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.fill,
+                                )),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(

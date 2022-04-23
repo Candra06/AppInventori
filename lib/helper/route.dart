@@ -5,6 +5,7 @@ import 'package:inventory/barang/listBarang.dart';
 import 'package:inventory/barang/tambahBarang.dart';
 import 'package:inventory/histori/historyPemasukan.dart';
 import 'package:inventory/histori/historyPengeluaran.dart';
+import 'package:inventory/repository/backupMenu.dart';
 import 'package:inventory/splash.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -22,6 +23,7 @@ class Routes {
   static const String ROOM_CHAT = '/room_chat';
   static const String DETAIL_CHALLENGE = '/detail_challenge';
   static const String MEMBERSHIP = '/membership';
+  static const String BACKUP_MENU = '/backup_menu';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -31,10 +33,16 @@ class Routes {
         return PageTransition(child: ListBarang(), type: PageTransitionType.bottomToTop);
       case HISTORY_BARANG_KELUAR:
         return PageTransition(child: HistoriPengeluaran(), type: PageTransitionType.bottomToTop);
-         case ADD_BARANG:
-        return PageTransition(child: TambahDataBarang(tipe: 'tambah',), type: PageTransitionType.bottomToTop);
+      case ADD_BARANG:
+        return PageTransition(
+            child: TambahDataBarang(
+              tipe: 'tambah',
+            ),
+            type: PageTransitionType.bottomToTop);
       case HISTORY_BARANG_MASUK:
         return PageTransition(child: HistoriPemasukan(), type: PageTransitionType.bottomToTop);
+      case BACKUP_MENU:
+        return PageTransition(child: BackupData(), type: PageTransitionType.bottomToTop);
       case DETAIL_BARANG:
         return PageTransition(
             child: DetailBarang(
