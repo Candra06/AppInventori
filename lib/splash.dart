@@ -100,18 +100,17 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   @override
   void initState() {
-    
     _controller = AnimationController(duration: const Duration(milliseconds: 2000), vsync: this, value: 0.1);
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
     _controller.forward();
 
     Future.delayed(Duration(seconds: 3), () async {
-      // String token = await Pref.getToken();
-      // if (token == null || token == 'null') {
-      //   Navigator.of(context).pushReplacement(PageTransition(child: LoginPIN(), type: PageTransitionType.fade));
-      // } else {
-      // }
-      Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
+      String token = await Pref.getToken();
+      if (token == null || token == 'null') {
+        Navigator.of(context).pushReplacement(PageTransition(child: LoginPIN(), type: PageTransitionType.fade));
+      } else {
+        Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
+      }
 
       //   // }
     });

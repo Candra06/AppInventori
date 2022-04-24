@@ -26,24 +26,24 @@ class _LoginPINState extends State<LoginPIN> {
       Config.loading(context);
     });
     conn.initDB();
-    // AuthRepository authRepository = new AuthRepository();
-    // Auth _auth = new Auth();
-    // _auth.username = txtUsername.text;
-    // _auth.pin = txtPassword.text;
+    AuthRepository authRepository = new AuthRepository();
+    Auth _auth = new Auth();
+    _auth.username = txtUsername.text;
+    _auth.pin = txtPassword.text;
 
-    // bool respon = await authRepository.login(_auth);
-    // if (respon == true) {
-    //   setState(() {
-    //     Navigator.pop(context);
-    //     Config.alert(1, 'Login Berhasil');
-    Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
-    //   });
-    // } else {
-    //   setState(() {
-    //     Navigator.pop(context);
-    //     Config.alert(2, 'Login gagal');
-    //   });
-    // }
+    bool respon = await authRepository.login(_auth);
+    if (respon == true) {
+      setState(() {
+        Navigator.pop(context);
+        Config.alert(1, 'Login Berhasil');
+        Navigator.of(context).pushReplacement(PageTransition(child: ListBarang(), type: PageTransitionType.fade));
+      });
+    } else {
+      setState(() {
+        Navigator.pop(context);
+        Config.alert(2, 'Login gagal');
+      });
+    }
   }
 
   Future<bool> _onWillPop() async {

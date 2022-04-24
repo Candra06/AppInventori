@@ -23,9 +23,7 @@ class Connection {
     if (db != null) {
       return db;
     }
-    Directory appDocDir = await getExternalStorageDirectory();
-    String appDocPath = appDocDir.path;
-    print(appDocPath);
+
     String databasesPath = await getDatabasesPath();
     print(databasesPath);
     db = await openDatabase(
@@ -56,11 +54,11 @@ class Connection {
   Future<List<Barang>> getBarang() async {
     final Database _db = await database;
     final List<Map<String, dynamic>> list = await _db.query("barang", where: "status = 'Tersedia'");
-
+    // print(list);
     // return list;
     List<Map<String, dynamic>> result = [];
-    Map<String, dynamic> tmp = {};
     for (var i = 0; i < list.length; i++) {
+      Map<String, dynamic> tmp = {};
       final List<Map<String, dynamic>> pemasukan = await _db.query("pemasukan", where: "barang_id = ?", whereArgs: [list[i]['id']], orderBy: 'id DESC');
       final List<Map<String, dynamic>> pengeluaran = await _db.query("pengeluaran", where: "barang_id = ?", whereArgs: [list[i]['id']], orderBy: 'id DESC');
       tmp['id'] = list[i]['id'];
@@ -84,6 +82,7 @@ class Connection {
         tmp['jumlah_keluar'] = 0;
         tmp['tanggal_keluar'] = '0';
       }
+
       result.add(tmp);
     }
     print(result);
@@ -127,7 +126,39 @@ class Connection {
     _db.insert('barang', barang.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<bool> updateBarang(int id,Barang barang) async {
+  void inputBarangMultiple(List<Map> data) async {
+    final Database _db = await database;
+    String sql = "INSERT INTO barang (nama_barang, stok, ongkos_pembuatan, harga_barang, status, foto, keterangan) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    var buffer = new StringBuffer();
+    int i = 0;
+    data.forEach((element) {
+      print(element);
+      buffer.write("('");
+      buffer.write(element['nama_barang']);
+      buffer.write("', '");
+      buffer.write(element['stok']);
+      buffer.write("', '");
+      buffer.write(element['ongkos_pembuatan']);
+      buffer.write("', '");
+      buffer.write(element['harga_barang']);
+      buffer.write("', '");
+      buffer.write(element['status']);
+      buffer.write("', '");
+      buffer.write(element['foto']);
+      buffer.write("', '");
+      buffer.write(element['keterangan']);
+      buffer.write("')");
+      if (i != data.length - 1) {
+        buffer.write(", ");
+      }
+      i++;
+    });
+    print("INSERT INTO barang ('nama_barang', stok, ongkos_pembuatan, harga_barang, status, foto, keterangan) VALUES ${buffer.toString()}");
+    // await _db.rawInsert(sql, [element['nama_barang'], element['stok'], element['ongkos_pembuatan'], element['harga_barang'], element['status'], element['foto'], element['keterangan']]);
+    await _db.rawInsert("INSERT INTO barang ('nama_barang', 'stok', 'ongkos_pembuatan', 'harga_barang', 'status', 'foto', 'keterangan') VALUES ${buffer.toString()}");
+  }
+
+  Future<bool> updateBarang(int id, Barang barang) async {
     final Database _db = db;
     print(barang.id);
     try {

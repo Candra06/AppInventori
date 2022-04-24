@@ -102,11 +102,7 @@ class _ListBarangState extends State<ListBarang> {
   permissionServiceCall() async {
     await permissionServices().then((value) {
       if (value != null) {
-        if (value[Permission.manageExternalStorage].isGranted
-            // && value[Permission.camera].isGranted
-            &&
-            value[Permission.storage].isGranted) {
-          print("permitted");
+        if (value[Permission.manageExternalStorage].isGranted && value[Permission.storage].isGranted) {
           _createFolder();
           /* ========= New Screen Added  ============= */
 
@@ -114,6 +110,9 @@ class _ListBarangState extends State<ListBarang> {
           //   context,
           //   MaterialPageRoute(builder: (context) => SplashScreen()),
           // );
+        } else {
+          _createFolder();
+          print("not permitted");
         }
       }
     });
@@ -144,43 +143,78 @@ class _ListBarangState extends State<ListBarang> {
 
   _createFolder() async {
     // final root = await getApplicationDocumentsDirectory();
-    final root = await getExternalStorageDirectory();
+    // final root = await getExternalStorageDirectory();
     // final fold = await getApplicationDocumentsDirectory();
-    String folder = root.path;
-
-    // Directory copyTo = Directory("storage/emulated/0/Inventori");
-    // final path = Directory("/storage/emulated/0/inventory/database");
-    final path = Directory("storage/emulated/0/Inventori/database");
-    // final pathImage = Directory("/storage/emulated/0/inventory/foto");
-    final pathImage = Directory("storage/emulated/0/Inventori/foto");
-    final data = Directory("/storage/emulated/0/Android/data/com.example.inventory/files");
+    // String folder = root.path;
     SharedPreferences pref = await SharedPreferences.getInstance();
-    if ((await path.exists())) {
-      print("exist");
-      // await copyTo.create();
-      // pref.setString("direktori", "/storage/emulated/0/Android/data/com.example.inventory/files/foto");
-      // pref.setString("db", "/storage/emulated/0/Android/data/com.example.inventory/files/database");
+    Directory copyTo = Directory("/storage/emulated/0/Inventori");
+    if ((await copyTo.exists())) {
     } else {
       try {
         print("not exist");
-        await data.create();
-        await path.create();
-        await pathImage.create();
-        // await copyTo.create();
-        // pref.setString("direktori", "/storage/emulated/0/Android/data/com.example.inventory/files/foto");
-        // pref.setString("db", "/storage/emulated/0/Android/data/com.example.inventory/files/database");
-        pref.setString("direktori", "storage/emulated/0/Inventori/foto");
-        pref.setString("db", "storage/emulated/0/Inventori/database");
+
+        await copyTo.create();
       } catch (e) {
         print(e.toString());
       }
     }
+    Directory path = Directory("/storage/emulated/0/Inventori/Database");
+    if ((await path.exists())) {
+    } else {
+      try {
+        print("not exist");
+
+        await path.create();
+        // pref.setString("db", "/storage/emulated/0/Android/data/com.example.inventory/files/database");
+        pref.setString("db", "/storage/emulated/0/Inventori/Database");
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+    // Directory path = Directory("storage/emulated/0/Inventori/database");
+    Directory pathImage = Directory("/storage/emulated/0/Inventori/Foto");
+    if ((await pathImage.exists())) {
+    } else {
+      try {
+        print("not exist");
+        await pathImage.create();
+        pref.setString("direktori", "/storage/emulated/0/Inventori/Foto");
+        // pref.setString("db", "storage/emulated/0/Inventori/database");
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+    // Directory pathImage = Directory("storage/emulated/0/Inventori/foto");
+    // Directory data = Directory("/storage/emulated/0/Android/data/com.example.inventory/files");
+
+    // if ((await path.exists())) {
+    //   print("exist");
+    //   // await copyTo.create();
+    //   // pref.setString("direktori", "/storage/emulated/0/Android/data/com.example.inventory/files/foto");
+    //   // pref.setString("db", "/storage/emulated/0/Android/data/com.example.inventory/files/database");
+    //   pref.setString("direktori", "storage/emulated/0/Inventori/foto");
+    //   pref.setString("db", "storage/emulated/0/Inventori/database");
+    // } else {
+    //   try {
+    //     print("not exist");
+    //     // data.create();
+    //     await copyTo.create();
+    //     await path.create();
+    //     await pathImage.create();
+    //     // pref.setString("direktori", "/storage/emulated/0/Android/data/com.example.inventory/files/foto");
+    //     // pref.setString("db", "/storage/emulated/0/Android/data/com.example.inventory/files/database");
+    //     pref.setString("direktori", "storage/emulated/0/Inventori/foto");
+    //     pref.setString("db", "storage/emulated/0/Inventori/database");
+    //   } catch (e) {
+    //     print(e.toString());
+    //   }
+    // }
   }
 
   @override
   void initState() {
     permissionServiceCall();
-    // _createFolder();
+    _createFolder();
     getData();
     super.initState();
     dataBarang = getBarang();

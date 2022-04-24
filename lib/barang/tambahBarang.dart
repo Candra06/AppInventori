@@ -51,7 +51,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
 
               pickedFile = await picker.getImage(source: ImageSource.camera);
 
-              if (pickedFile?.path == null) {
+              if (pickedFile.path == null) {
                 setState(() {
                   fileName = '';
                 });
@@ -60,7 +60,7 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                 namaFoto = pickedFile.path.split('/').last;
                 // fileName = pickedFile.path.toString();
                 tmpFile = File(pickedFile.path);
-                tmpFile = await tmpFile.copy('$url/$fileName');
+                tmpFile = await tmpFile.copy("$url/$fileName");
                 setState(() {
                   tmpFile = File(pickedFile.path);
                 });
@@ -70,18 +70,24 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
           MaterialButton(
               child: Text("Galeri"),
               onPressed: () async {
+                // Directory copyTo = Directory("storage/emulated/0/Inventori/foto");
                 Navigator.pop(context, ImageSource.gallery);
                 pickedFile = await picker.getImage(source: ImageSource.gallery);
-                if (pickedFile?.path == null) {
+                if (pickedFile.path == null) {
                   setState(() {
                     fileName = '';
                   });
                 } else {
                   fileName = pickedFile.path.split('/').last;
                   namaFoto = pickedFile.path.split('/').last;
+                  print(fileName);
+
                   // fileName = pickedFile.path.toString();
+                  // tmpFile = File(pickedFile.path);
+                  String newPath = "/storage/emulated/0/Inventori/Foto/$fileName";
+                  print(newPath);
                   tmpFile = File(pickedFile.path);
-                  tmpFile = await tmpFile.copy('$url/$fileName');
+                  await tmpFile.copy(newPath);
                   setState(() {
                     tmpFile = File(pickedFile.path);
                   });
@@ -313,7 +319,9 @@ class _TambahDataBarangState extends State<TambahDataBarang> {
                     size: 50,
                   ),
                 )
-              } else if ((widget.tipe == 'edit' && namaFoto.isNotEmpty) || (widget.tipe == 'tambah' && fileName.isNotEmpty)) ...{
+              } else if ((widget.tipe == 'tambah' && fileName.isNotEmpty)) ...{
+                Image.file(tmpFile)
+              } else if ((widget.tipe == 'edit' && fileName.isNotEmpty)) ...{
                 Image.file(tmpFile)
               } else if (widget.data != null) ...{
                 Image.file(
